@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NotifierAPI.Services;
 using NotifierAPI.Models;
+using System.Text.RegularExpressions;
 
 namespace NotifierAPI.Pages.Messages;
 
@@ -35,10 +36,18 @@ public class MessagesReplyModel : PageModel
 
     public void OnGet(string? to)
     {
-        // Pre-poblar el campo "To" si viene por query string
-        if (!string.IsNullOrEmpty(to))
+        // Si viene número por query (responder), normalizar y prellenar; si no, dejar en blanco
+        if (!string.IsNullOrWhiteSpace(to))
         {
-            To = to;
+            var normalized = to.Trim();
+            // Quitar espacios/separadores comunes
+            normalized = Regex.Replace(normalized, @"[\s-]", "");
+            // Añadir '+' si falta y son solo dígitos
+            if (!normalized.StartsWith("+") && Regex.IsMatch(normalized, @"^\d{6,15}$"))
+            {
+                normalized = "+" + normalized;
+            }
+            To = normalized;
         }
     }
 
@@ -61,7 +70,7 @@ public class MessagesReplyModel : PageModel
 
             SuccessMessage = $"Mensaje enviado exitosamente a {To}. ID: {result.Id}";
             
-            // Limpiar el formulario
+            // Limpiar el formulario tras enviar (cuando el usuario entra desde menú Enviar)
             ModelState.Clear();
             To = string.Empty;
             Message = string.Empty;

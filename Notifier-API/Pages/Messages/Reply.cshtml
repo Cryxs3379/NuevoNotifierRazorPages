@@ -137,12 +137,8 @@
             function updateCounts() {
                 const length = messageTextarea.value.length;
                 charCountSpan.textContent = length;
-                
-                // Calcular número de SMS (160 caracteres por SMS estándar)
                 const smsCount = Math.ceil(length / 160) || 1;
                 smsCountSpan.textContent = `(${smsCount} SMS)`;
-                
-                // Cambiar color si excede 1 SMS
                 if (smsCount > 1) {
                     smsCountSpan.classList.add('text-warning');
                 } else {
@@ -158,32 +154,30 @@
             form.addEventListener('submit', function(e) {
                 const toInput = document.getElementById('To');
                 const phoneRegex = /^\+\d{6,15}$/;
-                
                 if (!phoneRegex.test(toInput.value)) {
                     e.preventDefault();
                     toInput.classList.add('is-invalid');
                     alert('Por favor, ingresa un número de teléfono válido en formato E.164 (+34600123456)');
                     return false;
                 }
-                
                 if (messageTextarea.value.trim().length === 0) {
                     e.preventDefault();
                     messageTextarea.classList.add('is-invalid');
                     alert('Por favor, escribe un mensaje');
                     return false;
                 }
-                
-                // Deshabilitar botón para evitar doble envío
                 const sendBtn = document.getElementById('sendBtn');
                 sendBtn.disabled = true;
                 sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
             });
 
-            // Pre-poblar el número si viene por query string
+            // Pre-poblar y normalizar el número si viene por query string
             const urlParams = new URLSearchParams(window.location.search);
             const toParam = urlParams.get('to');
-            if (toParam && document.getElementById('To').value === '') {
-                document.getElementById('To').value = toParam;
+            const toInput = document.getElementById('To');
+            if (toParam && toInput.value === '') {
+                const normalized = toParam.replace(/[\s-]/g, '').replace(/^(\d{6,15})$/, '+$1');
+                toInput.value = normalized;
             }
         });
     </script>

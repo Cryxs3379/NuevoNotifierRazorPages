@@ -122,7 +122,7 @@
                                         </td>
                                         <td class="text-center">
                                             <a asp-page="/Messages/Reply" 
-                                               asp-route-to="@message.From" 
+                                               asp-route-to="@((!string.IsNullOrWhiteSpace(message.From) && message.From.StartsWith("+") ? message.From : ("+" + message.From)))" 
                                                class="btn btn-sm btn-outline-primary"
                                                title="Responder">
                                                 <i class="bi bi-reply-fill"></i> Responder

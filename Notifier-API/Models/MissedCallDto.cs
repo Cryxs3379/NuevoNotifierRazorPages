@@ -2,12 +2,12 @@ namespace NotifierAPI.Models;
 
 public class MissedCallDto
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public DateTime DateAndTime { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
-    public int Status { get; set; }
-    public bool? ClientCalledAgain { get; set; }
-    public DateTime? AnswerCall { get; set; }
+    public byte Status { get; set; }
+    public long? ClientCalledAgain { get; set; }
+    public long? AnswerCall { get; set; }
 }
 
 public class MissedCallsResponse
