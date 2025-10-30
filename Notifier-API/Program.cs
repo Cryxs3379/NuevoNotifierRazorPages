@@ -90,17 +90,4 @@ app.MapDelete("/api/v1/messages/{id}", async (string id, IInboxService inbox, Ca
 })
 .WithName("DeleteMessage");
 
-// Endpoint de soporte para listar mensajes (para pruebas y depuración)
-app.MapGet("/api/debug/messages", async (
-    string direction,
-    int page,
-    int pageSize,
-    string? accountRef,
-    IInboxService inbox,
-    CancellationToken ct) =>
-{
-    var result = await inbox.GetMessagesAsync(direction, page, pageSize, accountRef, ct);
-    return Results.Ok(result);
-})
-.WithName("DebugGetMessages");
 app.Run("http://localhost:5080");

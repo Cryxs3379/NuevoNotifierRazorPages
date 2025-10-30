@@ -153,10 +153,13 @@
                                                title="Responder">
                                                 <i class="bi bi-reply-fill"></i> Responder
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-outline-danger ms-1" 
-                                                    data-id="@message.Id" onclick="deleteMessage(this)">
-                                                <i class="bi bi-trash"></i> Eliminar
-                                            </button>
+                                            @if (Model.Direction.Equals("inbound", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <button type="button" class="btn btn-sm btn-outline-danger ms-1" 
+                                                        data-id="@message.Id" onclick="deleteMessage(this)">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </button>
+                                            }
                                         </td>
                                     </tr>
                                 }
