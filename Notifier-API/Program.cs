@@ -81,4 +81,26 @@ app.MapRazorPages();
 
 app.Logger.LogInformation("Razor Pages UI: http://localhost:5080");
 app.Logger.LogInformation("Esendex credentials configured: {IsConfigured}", hasCredentials);
+// Endpoint para eliminar mensajes de Esendex desde la UI
+app.MapDelete("/api/v1/messages/{id}", async (string id, IInboxService inbox, CancellationToken ct) =>
+{
+    if (string.IsNullOrWhiteSpace(id)) return Results.BadRequest(new { error = "Id requerido" });
+    var ok = await inbox.DeleteMessageAsync(id, ct);
+    return ok ? Results.NoContent() : Results.Problem(statusCode: 502, title: "No se pudo eliminar en Esendex");
+})
+.WithName("DeleteMessage");
+
+// Endpoint de soporte para listar mensajes (para pruebas y depuración)
+app.MapGet("/api/debug/messages", async (
+    string direction,
+    int page,
+    int pageSize,
+    string? accountRef,
+    IInboxService inbox,
+    CancellationToken ct) =>
+{
+    var result = await inbox.GetMessagesAsync(direction, page, pageSize, accountRef, ct);
+    return Results.Ok(result);
+})
+.WithName("DebugGetMessages");
 app.Run("http://localhost:5080");

@@ -57,6 +57,12 @@ public class MockInboxService : IInboxService
     }
 
     public bool IsConfigured() => false;
+
+    public Task<bool> DeleteMessageAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var removed = _mockMessages.RemoveAll(m => string.Equals(m.Id, id, StringComparison.OrdinalIgnoreCase)) > 0;
+        return Task.FromResult(removed);
+    }
 }
 
 

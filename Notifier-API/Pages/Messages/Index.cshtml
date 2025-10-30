@@ -153,6 +153,10 @@
                                                title="Responder">
                                                 <i class="bi bi-reply-fill"></i> Responder
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger ms-1" 
+                                                    data-id="@message.Id" onclick="deleteMessage(this)">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
                                         </td>
                                     </tr>
                                 }
@@ -252,6 +256,22 @@ else if (Model.Messages != null)
     <script>
         // Auto-refresh cada 30 segundos (opcional)
         // setTimeout(() => window.location.reload(), 30000);
+
+        async function deleteMessage(btn){
+            const id = btn.getAttribute('data-id');
+            if (!id) return;
+            if (!confirm('¿Eliminar este mensaje en Esendex?')) return;
+            try {
+                const res = await fetch(`/api/v1/messages/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (res.status === 204) {
+                    location.reload();
+                } else {
+                    alert('No se pudo eliminar el mensaje (ver logs).');
+                }
+            } catch {
+                alert('Error de red eliminando el mensaje.');
+            }
+        }
     </script>
 }
 

@@ -290,4 +290,34 @@ public class EsendexInboxService : IInboxService
     }
 
     public bool IsConfigured() => true;
+
+        public async Task<bool> DeleteMessageAsync(string id, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return false;
+            // Esendex admite distintas rutas según tipo/versión. Probamos varias.
+            var candidates = new[]
+            {
+                $"inbox/messages/{Uri.EscapeDataString(id)}",       // Inbound
+                $"messages/{Uri.EscapeDataString(id)}",             // Outbound
+                $"messageheaders/{Uri.EscapeDataString(id)}"        // Fallback en algunas cuentas
+            };
+
+            foreach (var path in candidates)
+            {
+                try
+                {
+                    using var req = new HttpRequestMessage(HttpMethod.Delete, path);
+                    var resp = await _httpClient.SendAsync(req, ct);
+                    _logger.LogInformation("Esendex delete {Path} ({Id}) -> {Status}", path, id, (int)resp.StatusCode);
+                    if (resp.IsSuccessStatusCode || resp.StatusCode == System.Net.HttpStatusCode.NoContent)
+                        return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Error deleting {Path} ({Id})", path, id);
+                }
+            }
+
+            return false;
+        }
 }
