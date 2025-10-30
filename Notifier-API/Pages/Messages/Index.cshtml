@@ -23,6 +23,32 @@
     </div>
 }
 
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item">
+    <a class="nav-link @(Model.Direction.Equals("inbound", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+       asp-page="/Messages/Index"
+       asp-route-direction="inbound"
+       asp-route-page="1"
+       asp-route-pageSize="@Model.PageSize"
+       asp-route-accountRef="@Model.AccountRef">
+      Entrantes
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link @(Model.Direction.Equals("outbound", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+       asp-page="/Messages/Index"
+       asp-route-direction="outbound"
+       asp-route-page="1"
+       asp-route-pageSize="@Model.PageSize"
+       asp-route-accountRef="@Model.AccountRef">
+      Enviados
+    </a>
+  </li>
+  <li class="nav-item ms-2 align-self-center text-muted small">
+    @(Model.Direction.Equals("inbound", StringComparison.OrdinalIgnoreCase) ? "Mostrando entrantes" : "Mostrando enviados")
+  </li>
+</ul>
+
 <div class="row mb-4">
     <div class="col-12">
         <div class="card shadow-sm">
